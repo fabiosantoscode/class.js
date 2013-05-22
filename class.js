@@ -23,7 +23,7 @@ if (typeof Proxy !== "undefined") {
 }
 
 function requireDynamicInheritance() {
-    if (!availableProxyApi) {
+    if (!module.exports.availableProxyApi) {
         throw new Error('No Proxy API available. To use Proxies, use ECMAScript Harmony')
     }
     return module.exports
@@ -86,7 +86,7 @@ function resolve2Bases(a, b) {
     // class. This is accomplished in static mode by copying every property,
     // but in dynamic mode a fancy Proxy object is created.
 
-    if (exports.availableProxyApi == 'old API') {
+    if (module.exports.availableProxyApi == 'old API') {
         var bProxy = makeClass(b)
         aProxy.__class__.prototype = makeOldApiProxy(bProxy.__class__.prototype, aProxy.__class__.prototype)
         aProxy.__type__.prototype = makeOldApiProxy(bProxy.__type__.prototype, aProxy.__type__.prototype)
