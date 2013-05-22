@@ -11,10 +11,12 @@ module.exports = {
 }
 
 if (typeof Proxy !== "undefined") {
-    if (Proxy.create) {  // Prioritize this one for now
+    if (typeof Proxy === 'function') {
+        exports.availableProxyApi = 'new API'  // still unsupported
+    } else if (typeof Proxy.create === 'function') {
         exports.availableProxyApi = 'old API'
     } else {
-        exports.availableProxyApi = 'new API'
+        exports.availableProxyApi = null
     }
 } else {
     exports.availableProxyApi = null
@@ -79,13 +81,17 @@ function resolve2Bases(a, b) {
     aProxy.__parent__ = a
     aProxy.__mixin__ = b
     
+    // 2 base classes are resolved by subclassing the "main" base class,
+    // and then make that subclass have the same properties as the second base
+    // class. This is accomplished in static mode by copying every property,
+    // but in dynamic mode a fancy Proxy object is created.
+
     if (exports.availableProxyApi == 'old API') {
         var bProxy = makeClass(b)
         aProxy.__class__.prototype = makeOldApiProxy(bProxy.__class__.prototype, aProxy.__class__.prototype)
         aProxy.__type__.prototype = makeOldApiProxy(bProxy.__type__.prototype, aProxy.__type__.prototype)
     } else {
-        // Make a subclass of A, shove all keys from B
-        
+        // Statically copy all keys from B
         Object.keys(b.__type__.prototype)
             .forEach(function (key) {
                 aProxy.__type__.prototype[key] = b.__type__.prototype[key]
