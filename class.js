@@ -12,14 +12,14 @@ module.exports = {
 
 if (typeof Proxy !== "undefined") {
     if (typeof Proxy === 'function') {
-        exports.availableProxyApi = 'new API'  // still unsupported
+        module.exports.availableProxyApi = 'new API'  // still unsupported
     } else if (typeof Proxy.create === 'function') {
-        exports.availableProxyApi = 'old API'
+        module.exports.availableProxyApi = 'old API'
     } else {
-        exports.availableProxyApi = null
+        module.exports.availableProxyApi = null
     }
 } else {
-    exports.availableProxyApi = null
+    module.exports.availableProxyApi = null
 }
 
 function requireDynamicInheritance() {
